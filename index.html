@@ -1,54 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Monitoring Trackwork</title>
+  <meta charset="UTF-8">
+  <title>Secure Portal Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0f172a;
+      color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .login-box {
+      background-color: #1e293b;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #error {
+      color: #f87171;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h2>Daily Reports Recovery</h2>
-  <button onclick="getLocation()">Asking Recovery</button>
-  <p id="location"></p>
+  <div class="login-box">
+    <h2>Authorized Access Only</h2>
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button onclick="validateLogin()">Login</button>
+    <div id="error"></div>
+  </div>
 
   <script>
-    function getLocation() {
-      if (!navigator.geolocation) {
-        document.getElementById("location").innerText = "Geolocation not supported by this browser.";
-        return;
+    const correctUsername = "Fadel3215a";   // 🛠️ Your username here
+    const correctPassword = "Fadel3323355";  // 🛠️ Your password here
+
+    function validateLogin() {
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const error = document.getElementById("error");
+
+      if (user === correctUsername && pass === correctPassword) {
+        // ✅ Login successful — go to GPS page
+        window.location.href = "gps.html"; // Or your next page
+      } else {
+        // ❌ Show error
+        error.textContent = "Invalid username or password.";
       }
-
-      navigator.geolocation.getCurrentPosition(
-        showPosition,
-        showError,
-        {
-          enableHighAccuracy: true,     // 📍 Ask for GPS/Wi-Fi-based location
-          timeout: 10000,               // ⏱️ Wait up to 10 seconds
-          maximumAge: 0                 // ♻️ Don't use an cached location
-        }
-      );
-    }
-
-    function showPosition(position) {
-      document.getElementById("location").innerText =
-        "Access Code: LAT " + position.coords.latitude.toFixed(5) +
-        ", LNG " + position.coords.longitude.toFixed(5);
-    }
-
-    function showError(error) {
-      let message = "Unable to retrieve location: ";
-      switch (error.code) {
-        case error.PERMISSION_DENIED:
-          message += "Permission denied.";
-          break;
-        case error.POSITION_UNAVAILABLE:
-          message += "Position unavailable.";
-          break;
-        case error.TIMEOUT:
-          message += "Request timed out.";
-          break;
-        case error.UNKNOWN_ERROR:
-          message += "Unknown error.";
-          break;
-      }
-      document.getElementById("location").innerText = message;
     }
   </script>
 </body>
