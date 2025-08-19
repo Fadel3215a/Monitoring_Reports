@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Secure Portal Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0f172a;
+      color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .login-box {
+      background-color: #1e293b;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #error {
+      color: #f87171;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Authorized Access Only</h2>
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button onclick="validateLogin()">Login</button>
+    <div id="error"></div>
+  </div>
+
+  <script>
+    const correctUsername = "Fadel3215a";   // 🛠️ Your username here
+    const correctPassword = "Fadel3323355";  // 🛠️ Your password here
+
+    function validateLogin() {
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const error = document.getElementById("error");
+
+      if (user === correctUsername && pass === correctPassword) {
+        // ✅ Login successful — go to GPS page
+        window.location.href = "gps.html"; // Or your next page
+      } else {
+        // ❌ Show error
+        error.textContent = "Invalid username or password.";
+      }
+    }
+  </script>
+</body>
+</html>
