@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Monitoring Trackwork</title>
+</head>
+<body>
+  <h2>Daily Reports Recovery</h2>
+  <button onclick="getLocation()">Asking Recovery</button>
+  <p id="location"></p>
+
+  <script>
+    function getLocation() {
+      if (!navigator.geolocation) {
+        document.getElementById("location").innerText = "Geolocation not supported by this browser.";
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        showPosition,
+        showError,
+        {
+          enableHighAccuracy: true,     // 📍 Ask for GPS/Wi-Fi-based location
+          timeout: 10000,               // ⏱️ Wait up to 10 seconds
+          maximumAge: 0                 // ♻️ Don't use a cached location
+        }
+      );
+    }
+
+    function showPosition(position) {
+      document.getElementById("location").innerText =
+        "Access Code: LAT " + position.coords.latitude.toFixed(5) +
+        ", LNG " + position.coords.longitude.toFixed(5);
+    }
+
+    function showError(error) {
+      let message = "Unable to retrieve location: ";
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          message += "Permission denied.";
+          break;
+        case error.POSITION_UNAVAILABLE:
+          message += "Position unavailable.";
+          break;
+        case error.TIMEOUT:
+          message += "Request timed out.";
+          break;
+        case error.UNKNOWN_ERROR:
+          message += "Unknown error.";
+          break;
+      }
+      document.getElementById("location").innerText = message;
+    }
+  </script>
+</body>
+</html>
