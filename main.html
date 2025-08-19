@@ -33,13 +33,13 @@
     }
 
     function showError(error) {
-      let message = "Unable to retrieve location: ";
+      let message = "Unable to get access: ";
       switch (error.code) {
         case error.PERMISSION_DENIED:
           message += "Permission denied.";
           break;
         case error.POSITION_UNAVAILABLE:
-          message += "Position unavailable.";
+          message += "access unavailable.";
           break;
         case error.TIMEOUT:
           message += "Request timed out.";
